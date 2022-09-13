@@ -1,8 +1,7 @@
 <template>
   <div>
-    <p>Autor: {{ autor }}</p>
-    <p :title="mensagem">{{ new Date().toLocaleString() }}</p>
-    <button @click="maiuscula()">Mudar autor</button>
+   <autor-header nome= "Giulia"></autor-header>
+   <autor-header nome= "Outro"></autor-header>
 
     <div>
       <h2>Projetos</h2>
@@ -16,7 +15,9 @@
         <input type="text" id="nome" v-model="nome" size="30 required" /><br />
         <label for="duracao">Duração</label>
         <input type="number" id="duracao" v-model="duracao" required /><br />
-        <input type="submit" value="Adicionar" /><br />
+        <input type="submit" :value="textoDoBotaoSalvar" />
+
+        <br />
 
         {{ nome }}
         {{ duracao }}
@@ -33,7 +34,8 @@
           <th @click="ordenar">
             Nome
             <span v-if="ordened" class="material-symbols-outlined"
-              >arrow_upward</span>
+              >arrow_upward</span
+            >
             <span v-else class="material-symbols-outlined">arrow_downward</span>
           </th>
           <th>Duração</th>
@@ -46,31 +48,36 @@
         >
           <td>{{ p.id }}</td>
 
-          <td>{{ p.id }}</td>
-
           <td>{{ p.nome }}</td>
 
           <td>{{ p.duracao }} -- {{ isSelected(p) }}</td>
 
           <td><a href="#" @click="excluir(p)">Excluir</a></td>
-          <td><a href="#" @click="editar(p)">Editar</a></td>
-
+          <td><a name="atualizar" href="#" @click="update(p)">Editar</a></td>
         </tr>
       </table>
 
+      <span style="display: flex; justify-content: left"
+        >Duracao total: {{ values() }}</span
+      >
       {{ selected }}
     </div>
   </div>
 </template>
 
 <script>
+
+
+import AutorHeader from './components/AutorHeader.vue'
+
 export default {
+
+  components: {
+    AutorHeader
+  },
+
   data() {
     return {
-      // json javascript object notation
-      autor: "Giulia",
-      mensagem: "Meu primeiro app vue",
-      maiusculaMinuscula: false,
       filtro: "",
       mostraFormulario: false,
       selected: null,
@@ -97,11 +104,25 @@ export default {
   },
 
   methods: {
-    editar(p) {
-      
+    values() {
+      let value = 0;
 
+      console.log(this.projetos.forEach((p) => p.duracao));
 
-    },    
+      this.projetos.forEach((p) => (value += p.duracao));
+
+      return value;
+    },
+
+    update(projeto) {
+      this.form_view = true;
+
+      this.nome = projeto.nome;
+
+      this.duracao = projeto.duracao;
+
+      //projeto.nome = this.nome
+    },
     ordenar() {
       if (
         this.projetos.sort((a, b) => b.nome.localeCompare(a.nome)) &&
@@ -116,12 +137,6 @@ export default {
     },
     isSelected(projeto) {
       return this.selected !== null && this.selected.id == projeto.id;
-    },
-    transformar() {
-      this.autor = this.maiusculaMinuscula
-        ? this.autor.toUpperCase()
-        : this.autor.toLowerCase();
-      this.maiusculaMinuscula = !this.maiusculaMinuscula;
     },
 
     maiuscula() {
@@ -142,12 +157,35 @@ export default {
     },
 
     salvar() {
+      let sucesso = this.selected == null ? this.inserir() : this.alterar(); 
+      if (sucesso) {
+        this.limparcampos()
+    }
+    },
+    limparcampos(){
+      this.selected = null
+      this.nome = ''
+      this.duracao = null
+      this.mostraFormulario = false
+    },
+
+    validar(){
       const achou = this.projetos.some((p) => p.nome == this.nome);
       if (achou) {
         alert("achou");
+        return false
+      }
+      return 
+
+    },
+
+    inserir() {
+      const achou = this.projetos.some((p) => p.nome == this.nome);
+      if (achou) {
+        alert("achou");
+        return false
       } else {
-        // let maiorId = 0
-        // this.projetos.forEach(p => maiorId = p.id > maiorId ? p.id : maiorId)
+      
 
         this.projetos.push({
           id: this.getMaiorId(),
@@ -158,9 +196,15 @@ export default {
         this.duracao = null;
         this.mostraFormulario = false;
       }
-
-    
+      return 
     },
+
+    alterar() {
+      this.selected.nome = this.nome
+      this.selected.duracao = this.duracao
+      return true
+    },
+
     excluir(projeto) {
       this.projetos.splice(this.projetos.indexOf(projeto), 1);
     },
@@ -172,7 +216,11 @@ export default {
         p.nome.toLowerCase().includes(this.filtro.toLowerCase())
       );
     },
+    textoDoBotaoSalvar() {
+    return this.selected == null ? "Adicionar" : "Alterar";
   },
+  },
+  
 };
 </script>
 
