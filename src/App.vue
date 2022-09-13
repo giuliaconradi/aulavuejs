@@ -1,7 +1,7 @@
 <template>
   <div>
-   <autor-header nome= "Giulia"></autor-header>
-   <autor-header nome= "Outro"></autor-header>
+    <autor-header nome="Giulia"></autor-header>
+    <autor-header nome="Outro"></autor-header>
 
     <div>
       <h2>Projetos</h2>
@@ -66,14 +66,11 @@
 </template>
 
 <script>
-
-
-import AutorHeader from './components/AutorHeader.vue'
+import AutorHeader from "./components/AutorHeader.vue";
 
 export default {
-
   components: {
-    AutorHeader
+    AutorHeader,
   },
 
   data() {
@@ -157,36 +154,33 @@ export default {
     },
 
     salvar() {
-      let sucesso = this.selected == null ? this.inserir() : this.alterar(); 
+      let sucesso = this.selected == null ? this.inserir() : this.alterar();
       if (sucesso) {
-        this.limparcampos()
-    }
+        this.limparcampos();
+      }
     },
-    limparcampos(){
-      this.selected = null
-      this.nome = ''
-      this.duracao = null
-      this.mostraFormulario = false
+    limparcampos() {
+      this.selected = null;
+      this.nome = "";
+      this.duracao = null;
+      this.mostraFormulario = false;
     },
 
-    validar(){
+    validar() {
       const achou = this.projetos.some((p) => p.nome == this.nome);
       if (achou) {
         alert("achou");
-        return false
+        return false;
       }
-      return 
-
+      return;
     },
 
     inserir() {
       const achou = this.projetos.some((p) => p.nome == this.nome);
       if (achou) {
         alert("achou");
-        return false
+        return false;
       } else {
-      
-
         this.projetos.push({
           id: this.getMaiorId(),
           nome: this.nome,
@@ -196,13 +190,13 @@ export default {
         this.duracao = null;
         this.mostraFormulario = false;
       }
-      return 
+      return;
     },
 
     alterar() {
-      this.selected.nome = this.nome
-      this.selected.duracao = this.duracao
-      return true
+      this.selected.nome = this.nome;
+      this.selected.duracao = this.duracao;
+      return true;
     },
 
     excluir(projeto) {
@@ -217,10 +211,9 @@ export default {
       );
     },
     textoDoBotaoSalvar() {
-    return this.selected == null ? "Adicionar" : "Alterar";
+      return this.selected == null ? "Adicionar" : "Alterar";
+    },
   },
-  },
-  
 };
 </script>
 
